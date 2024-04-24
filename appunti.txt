@@ -52,3 +52,9 @@ Test22hgb/
 
 Per installare nodemon e ts-node come dipendenze di sviluppo:
 npm install --save-dev nodemon ts-node
+
+
+Per creare una documentazione completa usando SWagger:
+  - installazione e configurazione:
+    npm install swagger-ui-express swagger-jsdoc
+
