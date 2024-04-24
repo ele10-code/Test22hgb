@@ -1,0 +1,54 @@
+1) Node.js
+Per inizializzare un nuovo progetto Node.js creando automaticamente un file package.json con valori predefiniti posso utilizzare 
+un comando semplice: npm init -y
+Il file 'package.json' specifica le dipendenze del progetto, gli script eseguibili, le informazioni sulla versione e altre metadati del progetto.
+=>  utile per iniziare rapidamente un nuovo progetto senza dover passare attraverso la configurazione manuale di ogni dettaglio nel file package.json
+
+Dipendenze, sopratutto dato che devo sviluppare con TypeScript:
+Il comando 'npm install --save-dev typescript @types/node @types/express' installa tre pacchetti come dipendenze di sviluppo nel tuo progetto Node.js. 
+Ecco cosa fa ciascuno di questi pacchetti e perché sono importanti, specialmente in contesti di sviluppo con TypeScript:
+
+TypeScript (typescript): TypeScript è un linguaggio di programmazione sviluppato da Microsoft che si basa su JavaScript aggiungendo il supporto per tipi statici. 
+  È particolarmente utile in progetti grandi per migliorare la manutenibilità e ridurre gli errori di runtime attraverso la verifica dei tipi in fase di compilazione. 
+  Installare TypeScript come dipendenza di sviluppo permette di utilizzarlo per compilare i file .ts in JavaScript.
+Tipi Node.js (@types/node): Questo pacchetto contiene le definizioni di tipo per Node.js. 
+  Le definizioni di tipo sono essenziali per permettere a TypeScript di comprendere e validare correttamente i tipi delle variabili, funzioni, moduli, ecc., che fanno parte dell'ambiente Node.js. 
+  Questo è particolarmente utile quando si scrive codice TypeScript che utilizza funzioni o moduli specifici di Node.js, come il modulo fs per la gestione dei file o http per i server.
+Tipi Express (@types/express): Simile al pacchetto @types/node, @types/express fornisce le definizioni di tipo per il framework Express. 
+  Questo permette a TypeScript di verificare i tipi quando si utilizzano funzioni, oggetti e metodi forniti da Express, facilitando lo sviluppo di applicazioni web robuste e riducendo gli errori di tipo.
+
+2) Express
+Express è un framework per applicazioni web per Node.js, progettato per rendere più facile la costruzione di applicazioni web e API. 
+funzionalità chiave e usi di Express:
+
+- Routing: Express permette di gestire facilmente le richieste HTTP con differenti metodi (come GET, POST, DELETE) su diversi URL. Questo è fondamentale per costruire sia pagine web che API RESTful.
+- Middleware: Express utilizza una serie di funzioni middleware che hanno accesso agli oggetti della richiesta (request), della risposta (response), e alla funzione "next" nel ciclo della richiesta-risposta. 
+    Queste funzioni possono eseguire qualsiasi codice, modificare gli oggetti di richiesta e risposta, terminare il ciclo di richiesta-risposta, e chiamare la funzione successiva nel stack. 
+    Questo rende Express molto flessibile e potente per il preprocessing delle richieste.
+- Semplificazione di server HTTP: Con poche righe di codice, Express permette di configurare un server HTTP, rendendo più semplice la gestione delle sessioni, il parsing dei dati della richiesta e la risposta con file o dati JSON.
+- Supporto per template engine: Express supporta diversi template engine come Pug, Mustache, EJS, che aiutano a costruire i componenti visuali delle applicazioni web, consentendo una facile integrazione del backend con il frontend.
+- Performance: Essendo un framework minimalista, Express è progettato per essere veloce e efficiente, facilitando la creazione di applicazioni performanti.
+- Comunità e ecosistema: Dato che Express è così diffuso, esiste una vasta comunità di sviluppatori e un ricco ecosistema di plugin e middleware che possono estendere le sue funzionalità.
+
+L'installazione di Express avviene tramite npm (Node Package Manager) è molto semplice, si fa eseguendo il seguente comando:
+npm install express
+
+Eseguire il server usando un comando come npm start, che si deve configurare nel file package.json
+
+Test22hgb/
+│
+├── node_modules/       # Librerie installate via npm
+│
+├── src/                # Codice sorgente TypeScript
+│   └── app.ts          # server Express
+│
+├── dist/               # Codice compilato JavaScript (output di TypeScript)
+│
+├── package.json        # Configurazioni del progetto e dipendenze
+├── package-lock.json   # Stato bloccato delle dipendenze per assicurare la compatibilità
+├── tsconfig.json       # Configurazioni per il compilatore TypeScript
+└── .gitignore          # File che specifica quali file o cartelle ignorare in Git
+└── README.md           # 
+
+Per installare nodemon e ts-node come dipendenze di sviluppo:
+npm install --save-dev nodemon ts-node

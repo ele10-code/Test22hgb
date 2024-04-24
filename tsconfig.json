@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "es2017",         // Compila il codice per ES2017 (compatibile con versioni recenti di Node.js)
+    "module": "commonjs",       // Usa il sistema di moduli CommonJS, adatto per Node.js
+    "outDir": "./dist",         // Directory di output per i file JavaScript compilati
+    "rootDir": "./src",         // Directory contenente i file sorgente TypeScript
+    "strict": true,             // Abilita tutte le opzioni strict type-checking
+    "esModuleInterop": true,    // Consente l'importazione di moduli ES6 nel modo consueto di TypeScript
+    "skipLibCheck": true,       // Salta il controllo dei tipi delle dichiarazioni dei file .d.ts
+    "forceConsistentCasingInFileNames": true,  // Forza l'uso consistente della capitalizzazione nei nomi dei file
+    "moduleResolution": "node"  // Risoluzione dei moduli in stile Node.js
+  },
+  "include": [
+    "src/**/*.ts"               // Include tutti i file TypeScript nella cartella src e sottocartelle
+  ],
+  "exclude": [
+    "node_modules",             // Esclude la cartella node_modules dal processo di compilazione
+    "dist"                      // Esclude la cartella dist dal processo di compilazione
+  ]
+}
