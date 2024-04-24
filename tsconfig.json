@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",         // Compila il codice per ES2017 (compatibile con versioni recenti di Node.js)
-    "module": "commonjs",       // Usa il sistema di moduli CommonJS, adatto per Node.js
+    "module": "esnext",       // Usa il sistema di moduli CommonJS, adatto per Node.js
     "outDir": "./dist",         // Directory di output per i file JavaScript compilati
     "rootDir": "./src",         // Directory contenente i file sorgente TypeScript
     "strict": true,             // Abilita tutte le opzioni strict type-checking

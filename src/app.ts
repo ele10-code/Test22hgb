@@ -3,6 +3,7 @@ import express from 'express';
 import fetch from 'node-fetch';  // Assicurati di avere installato node-fetch come dipendenza
 
 // Creazione dell'istanza dell'applicazione Express
+
 const app = express();
 const PORT = process.env.PORT || 3000;  // Porta del server, con fallback su 3000 se non specificato
 
