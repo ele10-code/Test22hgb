@@ -3,7 +3,7 @@ import express from 'express';
 import fetch from 'node-fetch'; // Assicurati di avere installato node-fetch come dipendenza
 // Creazione dell'istanza dell'applicazione Express
 const app = express();
-const PORT = process.env.PORT || 3000; // Porta del server, con fallback su 3000 se non specificato
+const PORT = process.env.PORT || 3001; // Porta del server, con fallback su 3000 se non specificato
 // Rotta base per verificare che il server sia in esecuzione
 app.get('/', (req, res) => {
     res.send('Hello World!');
