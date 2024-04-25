@@ -7,6 +7,22 @@ import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: 'json' };
 import swaggerJSDoc from 'swagger-jsdoc';
 
+// Importo il pacchetto redis
+import redis from 'redis';
+import { promisify } from 'util';
+
+
+// Crea un client Redis
+import { createClient } from 'redis';
+
+// Assumi che Redis sia in esecuzione con le impostazioni predefinite
+const redisClient = createClient({
+  url: 'redis://localhost:6380' 
+});
+
+redisClient.on('error', (err) => console.log('Redis Client Error', err));
+
+
 
 // definizione dell'interfaccia Post per rappresentare un post
 interface Post {
@@ -28,12 +44,13 @@ interface Cache {
 
 // Imposto il TTL per gli elementi della cache in secondi
 const CACHE_TTL = 3600; // 1 ora
-let cache: Cache = {};
+// discommenta se puoi provare a usare la cache in memoria invece di Redis
+// let cache: Cache = {};
 
 
 // Crea un'istanza di Express e imposta la porta del server a 3001
 const app = express(); // Crea un'istanza di Express
-const PORT = process.env.PORT || 3001; // Imposta la porta del server
+const PORT = process.env.PORT || 3002; // Imposta la porta del server
 
 
 // Funzione asincrona per configurare Swagger
@@ -57,6 +74,11 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
+// Connessione al server Redis
+(async () => {
+  try {
+    await redisClient.connect();
+    console.log('Connected to Redis');
 
 // Aggiungi il middleware di Swagger-UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -112,8 +134,8 @@ Per installare il pacchetto redis, possiamo eseguire il comando npm install redi
     next();
   }
 } */
-
-function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
+//1 opzione
+/* function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
   const key = req.originalUrl;
   const item = cache[key];
 
@@ -131,13 +153,50 @@ function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
     console.log('Cache miss');
     next();
   }
+} */
+
+
+//2 opzione
+// Middleware di cache che utilizza Redis per memorizzare i dati in cache
+async function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
+  const key = req.originalUrl;
+  try {
+      const cacheResult = await redisClient.get(key);
+      if (cacheResult != null) {
+          console.log('Cache hit!');
+          res.send(JSON.parse(cacheResult));
+      } else {
+          console.log('Cache miss');
+          // Capture the response using a custom response mechanism
+          const originalSend = res.send.bind(res);
+          res.send = (body: any): Response<any> => {
+              const valueToCache = JSON.stringify(body);
+              redisClient.setEx(key, CACHE_TTL, valueToCache)
+                  .then(() => console.log('Response cached'))
+                  .catch(err => console.error('Redis setEx error:', err));
+
+              // Restore the original send function and send the response
+              res.send = originalSend; // Restore original function to avoid issues on subsequent requests
+              return originalSend(body);
+          };
+          next();
+      }
+  } catch (err) {
+      console.error('Redis get error:', err);
+      next();
+  }
 }
 
+
+
+
+
 // Utilizzo questo metodo per aggiungere elementi alla cache
-function addToCache(key: string, value: any) {
+// da discommentare se si vuole utilizzare la cache in memoria invece di Redis
+/* function addToCache(key: string, value: any) {
   const expiry = Date.now() + CACHE_TTL * 1000;
   cache[key] = { value: JSON.stringify(value), expiry };
-}
+} */
 
 
 // Rotta per ottenere tutti i post
@@ -190,7 +249,8 @@ app.get('/posts-filtered', cacheMiddleware, async (req, res) => {
     
      // Salvo i post nella cache prima di inviarli al client
     const key = req.originalUrl;
-    addToCache(key, posts);
+    // da discommentare se si vuole utilizzare la cache in memoria invece di Redis
+    // addToCache(key, posts);
     res.json(posts);
 
 /*     const key = req.originalUrl;
@@ -205,3 +265,7 @@ app.get('/posts-filtered', cacheMiddleware, async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+  } catch (err) {
+    console.error('Error connecting to Redis:', err);
+  }
+})();

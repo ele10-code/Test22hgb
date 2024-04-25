@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ele10-code/Test22hgb#readme",
   "dependencies": {
+    "@types/redis": "^4.0.11",
     "express": "^4.19.2",
     "node-fetch": "^3.3.2",
     "redis": "^4.6.13",
