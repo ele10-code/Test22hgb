@@ -1,7 +1,6 @@
 # Test22hgb
 
-
-Descrizione breve del progetto.
+web service che consenta di interrogarlo tramite REST-API.
 
 ## Prerequisiti
 
@@ -45,3 +44,10 @@ URL: http://localhost:3002/sync-db
 Descrizione: Legge e ritorna i contenuti presenti all’interno della tabella ‘posts’ del database.
 URL: http://localhost:3002/posts-db
 
+## Documentazione API
+Per visualizzare la documentazione dell'API, visita:
+```bash
+      http://localhost:3002/api-docs
+
+
+Questa documentazione è stata generata con Swagger e ti permetterà di vedere tutti i punti di accesso disponibili e di testarli direttamente tramite l'interfaccia utente di Swagger.
