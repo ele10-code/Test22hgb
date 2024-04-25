@@ -48,6 +48,7 @@ URL: http://localhost:3002/posts-db
 Per visualizzare la documentazione dell'API, visita:
 ```bash
       http://localhost:3002/api-docs
+```
 
 
 Questa documentazione è stata generata con Swagger e ti permetterà di vedere tutti i punti di accesso disponibili e di testarli direttamente tramite l'interfaccia utente di Swagger.
