@@ -1,10 +1,11 @@
+
 import express, { Request, Response, NextFunction } from 'express';
+
 import fetch from 'node-fetch';
 import { Transform } from 'stream';
 import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: 'json' };
-import setupSwagger from './swagger';
-
+import swaggerJSDoc from 'swagger-jsdoc';
 
 
 // definizione dell'interfaccia Post per rappresentare un post
@@ -26,11 +27,39 @@ let cache: Cache = {};
 const app = express(); // Crea un'istanza di Express
 const PORT = process.env.PORT || 3001; // Imposta la porta del server
 
-setupSwagger(app); // Configura e inizializza Swagger UI
+
+// Funzione asincrona per configurare Swagger
+async function setupSwagger() {
+  const swaggerModule = await import('./swagger');
+  swaggerModule.default(app);
+}
+
+// Crea un oggetto Swagger-jsdoc senza specificare opzioni esplicite
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API Documentation',
+      version: '1.0.0',
+      description: 'Documentazione automatica della tua API',
+    },
+  },
+  apis: ['./src/app.ts'], // Specifica il percorso del file in cui sono definite le API
+};
+
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+
+
+// Aggiungi il middleware di Swagger-UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+// setupSwagger(app); // Configura e inizializza Swagger UI
+
+app.use(express.json()); // Middleware per parsing di JSON
 
 // Middleware per consentire le richieste da qualsiasi origine
 app.use((req, res, next) => {
-  res.setHeader('Controllo accesso', '*');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   next();
 });
 
@@ -76,7 +105,7 @@ function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
   const originalSend = res.send.bind(res);
   let responseData = Buffer.from('');
 
-  // Patch the res.send method to intercept response data
+  //Sovrascrivere il metodo send per mettere in cache i dati della risposta
   res.send = function (data: any) {
       if (typeof data === 'string') {
           responseData = Buffer.from(data);

@@ -12,9 +12,7 @@
     "resolveJsonModule": true,  // Abilita l'importazione di file JSON come moduli TypeScript
     "isolatedModules": true,    // Isola i file per garantire che non vengano condivisi i tipi tra i file
   },
-  "include": [
-    "src/**/*.ts"               // Include tutti i file TypeScript nella cartella src e sottocartelle
-  ],
+  "include": ["src/**/*"],
   "exclude": [
     "node_modules",             // Esclude la cartella node_modules dal processo di compilazione
     "dist"                      // Esclude la cartella dist dal processo di compilazione

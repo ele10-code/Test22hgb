@@ -28,7 +28,7 @@ nvm use node        # Usa l'ultima versione installata
 per la compilazione:
 npm run build
 
-
+npm run start
 
 
 2) Express

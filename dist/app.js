@@ -1,15 +1,37 @@
 import express from 'express';
 import fetch from 'node-fetch';
+import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: 'json' };
-import setupSwagger from './swagger';
+import swaggerJSDoc from 'swagger-jsdoc';
 let cache = {};
 // Crea un'istanza di Express e imposta la porta del server a 3001
 const app = express(); // Crea un'istanza di Express
 const PORT = process.env.PORT || 3001; // Imposta la porta del server
-setupSwagger(app); // Configura e inizializza Swagger UI
+// Funzione asincrona per configurare Swagger
+async function setupSwagger() {
+    const swaggerModule = await import('./swagger');
+    swaggerModule.default(app);
+}
+// Crea un oggetto Swagger-jsdoc senza specificare opzioni esplicite
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.0',
+        info: {
+            title: 'API Documentation',
+            version: '1.0.0',
+            description: 'Documentazione automatica della tua API',
+        },
+    },
+    apis: ['./src/app.ts'], // Specifica il percorso del file in cui sono definite le API
+};
+const swaggerSpec = swaggerJSDoc(swaggerOptions);
+// Aggiungi il middleware di Swagger-UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// setupSwagger(app); // Configura e inizializza Swagger UI
+app.use(express.json()); // Middleware per parsing di JSON
 // Middleware per consentire le richieste da qualsiasi origine
 app.use((req, res, next) => {
-    res.setHeader('Controllo accesso', '*');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     next();
 });
 // Rotta base per verificare che il server sia in esecuzione
