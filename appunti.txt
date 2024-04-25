@@ -17,6 +17,20 @@ Tipi Node.js (@types/node): Questo pacchetto contiene le definizioni di tipo per
 Tipi Express (@types/express): Simile al pacchetto @types/node, @types/express fornisce le definizioni di tipo per il framework Express. 
   Questo permette a TypeScript di verificare i tipi quando si utilizzano funzioni, oggetti e metodi forniti da Express, facilitando lo sviluppo di applicazioni web robuste e riducendo gli errori di tipo.
 
+
+AGGIORNAMENTO DI NODE.JS
+Se la tua versione di Node.js è inferiore alla 14.0.0, dovrai aggiornarla. Ecco per farlo:
+
+nvm install node    # Installa l'ultima versione disponibile
+nvm use node        # Usa l'ultima versione installata
+
+
+per la compilazione:
+npm run build
+
+
+
+
 2) Express
 Express è un framework per applicazioni web per Node.js, progettato per rendere più facile la costruzione di applicazioni web e API. 
 funzionalità chiave e usi di Express:
@@ -53,8 +67,41 @@ Test22hgb/
 Per installare nodemon e ts-node come dipendenze di sviluppo:
 npm install --save-dev nodemon ts-node
 
-
+4) Swagger, per la documentazione all'interno del progetto
 Per creare una documentazione completa usando SWagger:
   - installazione e configurazione:
     npm install swagger-ui-express swagger-jsdoc
+  -creazione del file swagger.js (interazione con API) e swagger.json (file di configurazione)
+
+  5) Gestione della cache
+
+  /* function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
+  const key = `${req.originalUrl}`;
+  if (cache[key]) {
+    console.log('Cache hit!');
+    return res.json(cache[key]);
+  }
+  console.log('Cache miss');
+
+  // Funzione originale per inviare la risposta
+  const originalSend = res.send;
+  res.send = (body: any) => {
+    cache[key] = body;
+    originalSend.call(res, body);
+  };
+  next();
+} */
+
+questa funzione non va bene, perchè ricordati che:
+ non puoi sovrascrivere direttamente res.send o res.json assegnandogli una nuova funzione. 
+ Ciò è dovuto al fatto che res.send e res.json sono metodi della risposta di Express che hanno specifiche firme e tipi di ritorno attesi che devono essere mantenuti.
+
+Si può utilizzare un approccio alternativo per catturare il contenuto della risposta e poi inviarlo, intercettando il flusso di dati inviato e memorizzarlo nella cache 
+Questo lo si può fare creando lo Stream per manipolare la risposta, quindi manipolando i dati prima che arrivino al client
+
+
+
+
+
+
 

@@ -1,7 +1,9 @@
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
+// src/swagger.ts
+import swaggerJsDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import { Express } from 'express'; // Assicurati di importare anche Express
 
-module.exports = (app) => {
+const setupSwagger = (app: Express): void => {
     const swaggerOptions = {
         swaggerDefinition: {
             openapi: '3.0.0',
@@ -15,13 +17,13 @@ module.exports = (app) => {
                     email: "support@example.com"
                 },
             },
-            servers: [{
-                url: 'http://localhost:3001'
-            }]
+            servers: [{ url: 'http://localhost:3001' }]
         },
-        apis: ['./routes/*.js'], // path to the APIs
+        apis: ['./routes/*.ts'], // Modifica questo percorso se le tue definizioni API sono in un'altra posizione
     };
 
     const swaggerDocs = swaggerJsDoc(swaggerOptions);
     app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 };
+
+export default setupSwagger;
