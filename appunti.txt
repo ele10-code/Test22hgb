@@ -99,7 +99,15 @@ questa funzione non va bene, perchè ricordati che:
 Si può utilizzare un approccio alternativo per catturare il contenuto della risposta e poi inviarlo, intercettando il flusso di dati inviato e memorizzarlo nella cache 
 Questo lo si può fare creando lo Stream per manipolare la risposta, quindi manipolando i dati prima che arrivino al client
 
-
+User
+Per implementare un sistema di cache che possa gestire la persistenza e avere un tempo di vita (TTL) per gli oggetti memorizzati, puoi modificare il tuo codice attuale in questo modo:
+- Chiave Cache Unica: Assicurati che la chiave della cache (in questo caso, req.originalUrl) sia unica per ogni combinazione diversa di parametri di query. 
+    Se la chiave non è unica, le richieste con parametri diversi potrebbero erroneamente ottenere dati dalla cache di un'altra richiesta.
+- Persistenza Cache: Dato che stai utilizzando una cache in-memory (un semplice oggetto JavaScript), i dati nella cache saranno persi ogni volta che il server si riavvia. 
+    Se hai riavviato il server tra una richiesta e l'altra, questo spiegherebbe perché non vedi mai "cache hit".
+- Manipolazione URL: Verifica che l'URL che stai testando nel browser o nel client HTTP corrisponda esattamente all'URL che il middleware di cache sta cercando di recuperare. 
+    Se c'è una discrepanza, anche minima, tra l'URL richiesto e la chiave della cache, il middleware di cache non troverà i dati corrispondenti.
+- Tempo di Vita Cache: Poiché non hai un meccanismo di scadenza per gli elementi nella cache, potresti anche voler considerare di aggiungere una sorta di timestamp o TTL (Time To Live) per ogni elemento in cache, in modo da poterli invalidare dopo un certo periodo di tempo.
 
 
 

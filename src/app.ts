@@ -15,11 +15,19 @@ interface Post {
   content: { rendered: string };
 }
 
-//definizione dell'interfaccia Cache per memorizzare i dati in cache
-interface Cache {
-  [key: string]: any;
+// Definisco una nuova interfaccia per gli elementi della cache con TTL per creare un oggetto di cache che tiene traccia sia del valore che del timestamp di quando è stato salvato
+interface CacheItem {
+  value: any;
+  expiry: number;
 }
 
+//definizione dell'interfaccia Cache per memorizzare i dati in cache
+interface Cache {
+  [key: string]: CacheItem;
+}
+
+// Imposto il TTL per gli elementi della cache in secondi
+const CACHE_TTL = 3600; // 1 ora
 let cache: Cache = {};
 
 
@@ -93,41 +101,43 @@ Per installare il pacchetto redis, possiamo eseguire il comando npm install redi
 //creazione del middleware per la gestione della cache
 // controlla se i dati sono presenti nella cache prima di effettuare una richiesta al server remoto
 
-function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
-  const key = `${req.originalUrl}`;
+
+/* function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
+  const key = req.originalUrl;
   if (cache[key]) {
-      console.log('Cache hit!');
-      res.send(cache[key]);
-      return;
+    console.log('Cache hit!');
+    res.send(cache[key]);
+  } else {
+    console.log('Cache miss');
+    next();
   }
-  console.log('Cache miss');
+} */
 
-  const originalSend = res.send.bind(res);
-  let responseData = Buffer.from('');
+function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
+  const key = req.originalUrl;
+  const item = cache[key];
 
-  //Sovrascrivere il metodo send per mettere in cache i dati della risposta
-  res.send = function (data: any) {
-      if (typeof data === 'string') {
-          responseData = Buffer.from(data);
-      } else if (Buffer.isBuffer(data)) {
-          responseData = data;
-      } else {
-          responseData = Buffer.from(JSON.stringify(data));
-      }
-      
-      // Cache the response data
-      cache[key] = responseData.toString('utf-8');
-      
-      // Send the response as usual
-      return originalSend(data);
-  };
-
-  next();
+  if (item) {
+    if (Date.now() < item.expiry) {
+      console.log('Cache hit!');
+      res.send(item.value);
+    } else {
+      console.log('Cache expired, fetching new data...');
+      // Rimuovi l'elemento scaduto dalla cache
+      delete cache[key];
+      next();
+    }
+  } else {
+    console.log('Cache miss');
+    next();
+  }
 }
 
-
-
-
+// Utilizzo questo metodo per aggiungere elementi alla cache
+function addToCache(key: string, value: any) {
+  const expiry = Date.now() + CACHE_TTL * 1000;
+  cache[key] = { value: JSON.stringify(value), expiry };
+}
 
 
 // Rotta per ottenere tutti i post
@@ -177,8 +187,15 @@ app.get('/posts-filtered', cacheMiddleware, async (req, res) => {
       posts = posts.slice(0, items);
       // posts = posts.slice(0, parseInt(items));
     }
-
+    
+     // Salvo i post nella cache prima di inviarli al client
+    const key = req.originalUrl;
+    addToCache(key, posts);
     res.json(posts);
+
+/*     const key = req.originalUrl;
+    cache[key] = JSON.stringify(posts)
+    res.json(posts); */
   } catch (error) {
     res.status(500).json({ error: 'Unable to fetch data' });
   }
