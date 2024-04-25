@@ -3,11 +3,24 @@
 
 Descrizione breve del progetto.
 
+## Prerequisiti
+
+Prima di iniziare, assicurati di avere installato i seguenti software:
+
+- Node.js
+- PostgreSQL
+- Redis
+
 ## Installazione
 
-1. Clona il repository.
-2. Esegui `npm install` per installare le dipendenze.
-3. ...
+Per iniziare a utilizzare questo progetto, segui i seguenti passaggi:
+
+1. Clona il repository:
+   ```bash
+   git clone [url-del-tuo-repository]
+   cd [nome-della-cartella-del-progetto]
+2. Per installare le dipendenze, utilizza: 
+3. ``` npm install --save-dev typescript @types/node @types/express ```
 
 ## Utilizzo
 
