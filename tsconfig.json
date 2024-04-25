@@ -11,6 +11,7 @@
     "moduleResolution": "node",  // Risoluzione dei moduli in stile Node.js
     "resolveJsonModule": true,  // Abilita l'importazione di file JSON come moduli TypeScript
     "isolatedModules": true,    // Isola i file per garantire che non vengano condivisi i tipi tra i file
+    "allowJs": true
   },
   "include": ["src/**/*"],
   "exclude": [

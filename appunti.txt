@@ -73,7 +73,7 @@ Per creare una documentazione completa usando SWagger:
     npm install swagger-ui-express swagger-jsdoc
   -creazione del file swagger.js (interazione con API) e swagger.json (file di configurazione)
 
-  5) Gestione della cache
+5) Gestione della cache
 
   /* function cacheMiddleware(req: Request, res: Response, next: NextFunction) {
   const key = `${req.originalUrl}`;
@@ -113,3 +113,11 @@ Per implementare un sistema di cache che possa gestire la persistenza e avere un
 
 
 
+6) Database Postgre
+PostgreSQL è adatto per lavorare con grandi quantità di dati e supporta transazioni complesse, il che lo rende una scelta solida per applicazioni che richiedono affidabilità e integrità dei dati.
+
+Perché PostgreSQL?
+Affidabilità: Supporta transazioni ACID, garantendo che le operazioni sul database siano eseguite in modo sicuro.
+Scalabilità: Gestisce grandi volumi di dati e numerosi utenti contemporaneamente.
+Flessibilità: Supporta una vasta gamma di tipi di dati, compresi JSON e spaziali per GIS.
+Comunità e supporto: Ha una vasta comunità di sviluppatori e una solida base di conoscenza.

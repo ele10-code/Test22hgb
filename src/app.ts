@@ -15,6 +15,11 @@ import { promisify } from 'util';
 // Crea un client Redis
 import { createClient } from 'redis';
 
+// Importa il pacchetto pg per PostgreSQL
+import pkg from 'pg';
+
+const { Pool } = pkg;
+
 // Assumi che Redis sia in esecuzione con le impostazioni predefinite
 const redisClient = createClient({
   url: 'redis://localhost:6380' 
@@ -22,7 +27,14 @@ const redisClient = createClient({
 
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
 
-
+// Configurazione della connessione al database PostgreSQL
+ const pool = new Pool({
+  user: 'postgres', 
+  host: 'localhost',
+  database: 'Test',
+  password: 'password',
+  port: 5432, // Porta predefinita di PostgreSQL
+}); 
 
 // definizione dell'interfaccia Post per rappresentare un post
 interface Post {
@@ -258,6 +270,34 @@ app.get('/posts-filtered', cacheMiddleware, async (req, res) => {
     res.json(posts); */
   } catch (error) {
     res.status(500).json({ error: 'Unable to fetch data' });
+  }
+});
+
+// Endpoint per sincronizzare i dati dal feed al database
+app.get('/sync-db', async (req, res) => {
+  try {
+    const response = await fetch('https://22hbg.com/wp-json/wp/v2/posts/');
+    let posts: Post[] = await response.json() as Post[];  // Converte la risposta in formato JSON e la tipizza come un array di oggetti 'Post'
+
+    // Scrivi i nuovi post nel database
+    await pool.query('TRUNCATE TABLE posts'); // Cancella i post esistenti
+    await Promise.all(posts.map(post => pool.query('INSERT INTO posts(id, title, content) VALUES($1, $2, $3)', [post.id, post.title.rendered, post.content.rendered])));
+
+    res.json({ message: 'Data synchronized successfully' });
+  } catch (error) {
+    console.error('Error synchronizing data:', error);
+    res.status(500).json({ error: 'Unable to synchronize data' });
+  }
+});
+
+// Endpoint per ottenere i post dal database
+app.get('/posts-db', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM posts');
+    res.json(rows);
+  } catch (error) {
+    console.error('Error fetching data from database:', error);
+    res.status(500).json({ error: 'Unable to fetch data from database' });
   }
 });
 
