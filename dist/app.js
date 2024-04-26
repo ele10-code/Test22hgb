@@ -2,7 +2,13 @@ import express from 'express';
 import fetch from 'node-fetch';
 import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: 'json' };
-import swaggerJSDoc from 'swagger-jsdoc';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+// Ottenere il percorso del file corrente con il nuovo sistema di moduli ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 // Crea un client Redis
 import { createClient } from 'redis';
 // Importa il pacchetto pg per PostgreSQL
@@ -45,15 +51,15 @@ const swaggerOptions = {
     },
     apis: ['./src/app.ts'], // Specifica il percorso del file in cui sono definite le API
 };
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
 // Connessione al server Redis
 (async () => {
     try {
         await redisClient.connect();
         console.log('Connected to Redis');
-        // Aggiungi il middleware di Swagger-UI
-        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-        // setupSwagger(app); // Configura e inizializza Swagger UI
+        // Carica il file swagger.json
+        const swaggerDocumentPath = path.join(__dirname, 'swagger.json');
+        const swaggerDocument = JSON.parse(fs.readFileSync(swaggerDocumentPath, 'utf8'));
+        app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
         app.use(express.json()); // Middleware per parsing di JSON
         // Middleware per consentire le richieste da qualsiasi origine
         app.use((req, res, next) => {

@@ -5,7 +5,16 @@ import fetch from 'node-fetch';
 import { Transform } from 'stream';
 import swaggerUi from 'swagger-ui-express';
 // import swaggerDocument from './swagger.json' assert { type: 'json' };
-import swaggerJSDoc from 'swagger-jsdoc';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+
+// Ottenere il percorso del file corrente con il nuovo sistema di moduli ES
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 
 // Importo il pacchetto redis
 import redis from 'redis';
@@ -84,7 +93,6 @@ const swaggerOptions = {
   apis: ['./src/app.ts'], // Specifica il percorso del file in cui sono definite le API
 };
 
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 // Connessione al server Redis
 (async () => {
@@ -92,10 +100,11 @@ const swaggerSpec = swaggerJSDoc(swaggerOptions);
     await redisClient.connect();
     console.log('Connected to Redis');
 
-// Aggiungi il middleware di Swagger-UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Carica il file swagger.json
+const swaggerDocumentPath = path.join(__dirname, 'swagger.json');
+const swaggerDocument = JSON.parse(fs.readFileSync(swaggerDocumentPath, 'utf8'));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// setupSwagger(app); // Configura e inizializza Swagger UI
 
 app.use(express.json()); // Middleware per parsing di JSON
 

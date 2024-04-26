@@ -1,12 +1,11 @@
-// src/swagger.ts
 import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { Express } from 'express'; // Assicurati di importare anche Express
+import { Express } from 'express';
 
 const setupSwagger = (app: Express): void => {
     const swaggerOptions = {
         swaggerDefinition: {
-            openapi: '3.0.0',
+            openapi: '3.0.0', 
             info: {
                 title: 'API Documentation',
                 version: '1.0.0',
@@ -17,9 +16,9 @@ const setupSwagger = (app: Express): void => {
                     email: "support@example.com"
                 },
             },
-            servers: [{ url: 'http://localhost:3001' }]
+            servers: [{ url: 'http://localhost:3002' }]
         },
-        apis: ['./routes/*.ts'], // Modifica questo percorso se le tue definizioni API sono in un'altra posizione
+        apis: ['./src/*.ts'], 
     };
 
     const swaggerDocs = swaggerJsDoc(swaggerOptions);
